@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Slideshow from '../components/Slideshow.astro';
+import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
+import Insta from '../components/InstaPost.astro';
+
+import webpImage from '../assets/image1.jpg';
+import Container from '../layouts/Container.astro';
+import GoogleReview from '../components/GoogleReview.astro';
+---
+
+<Layout>
+	<Navbar />
+	<Slideshow />
+	<Container>
+		<div class="text-justify text-text text-lg">
+			<h1 class="text-2xl font-bold text-center font-sans">Zajímavý článek</h1>
+			<hr class="my-2 h-1 bg-gradient-to-r from-blue-500 to-purple-500 border-0">
+			<p class="md-6">
+				In as name to here them deny wise this. As rapid woody my he me which. Men but they fail shew just wish next put. Led all visitor musical calling nor her. Within coming figure sex things are. Pretended concluded did repulsive education smallness yet yet described. Had country man his pressed shewing. No gate dare rose he. Eyes year if miss he as upon.
+			</p>
+			<p class="my-6">
+				Old education him departure any arranging one prevailed. Their end whole might began her. Behaved the comfort another fifteen eat. Partiality had his themselves ask pianoforte increasing discovered. So mr delay at since place whole above miles. He to observe conduct at detract because. Way ham unwilling not breakfast furniture explained perpetual. Or mr surrounded conviction so astonished literature. Songs to an blush woman be sorry young. We certain as removal attempt.
+			</p>
+			<Image src={webpImage} alt="Idk" width="1280" height="720" format="webp" quality="max" class="mx-auto w-full h-full" />
+			<p class="mt-6">
+				Started earnest brother believe an exposed so. Me he believing daughters if forfeited at furniture. Age again and stuff downs spoke. Late hour new nay able fat each sell. Nor themselves age introduced frequently use unsatiable devonshire get. They why quit gay cold rose deal park. One same they four did ask busy. Reserved opinions fat him nay position. Breakfast as zealously incommode do agreeable furniture. One too nay led fanny allow plate.
+			</p>
+		</div>
+		<Insta />
+		<GoogleReview />
+	</Container>
+	<Footer />
+</Layout>

@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+import pic1 from '../assets/about/pic1.jpg';
+import pic2 from '../assets/about/pic2.jpg';
+
+import '../styles/global.css';
+---
+
+<section class="bg-specialbg font-sans">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+    <!-- First Image + First Text -->
+    <div class="flex flex-col items-center lg:items-start space-y-8">
+      <!-- Text Part 1 -->
+      <div class="w-full text-text space-y-6">
+        <h2 class="text-5xl font-semibold text-heading leading-tight">Hey, I’m Gabi 👋</h2>
+        <p class="text-lg leading-relaxed">
+          I’m a Maui-based lifestyle and wedding photographer with a heart for storytelling, sunlight, and real connection. Whether I’m capturing barefoot beach vows or cozy in-home family moments, my goal is always the same: to reflect your story in the most honest, heartfelt way possible.
+        </p>
+        <p class="text-lg leading-relaxed">
+          I believe the magic is in the in-betweens — the wind in your hair, the uncontrollable laughs, the way your partner looks at you when you’re not looking. That’s what I chase with my camera. I work in natural light and soft tones to create images that feel like memories — warm, imperfect, and deeply personal.
+        </p>
+      </div>
+
+      <!-- Image 1 -->
+      <div class="relative w-full max-w-[500px] h-[650px]">
+        <Image 
+          src={pic1}
+          alt="Portrait 1"
+          class="w-full h-full object-cover rounded-2xl shadow-xl border-2 border-border"
+        />
+      </div>
+    </div>
+
+    <!-- Second Image + Second Text -->
+    <div class="flex flex-col items-center lg:items-start space-y-8">
+      <!-- Image 2 -->
+      <div class="relative w-full max-w-[500px] h-[650px]">
+        <Image 
+          src={pic2}
+          alt="Portrait 2"
+          class="w-full h-full object-cover rounded-2xl shadow-xl border-2 border-border"
+        />
+      </div>
+
+      <!-- Text Part 2 -->
+      <div class="w-full text-text space-y-6">
+        <p class="text-lg leading-relaxed">
+          I’ve photographed people in canoes, on mountaintops, dancing in the rain, and snuggled in bed with coffee and dogs. No moment is too small to matter. When I’m not behind the lens, you’ll find me sipping a vanilla chai, swimming in tidepools, or road-tripping across the islands with my husband and our rescue pup, Liko.
+        </p>
+
+        <p class="text-lg leading-relaxed">
+          Photography is not just a job for me, it’s an adventure, an art, and a lifelong passion. Every session is an opportunity to connect with incredible people and celebrate their unique stories. I can’t wait to document yours.
+        </p>
+      </div>
+    </div>
+
+    <!-- List and CTA Button -->
+    <div class="col-span-1 lg:col-span-2 text-center mt-12 space-y-6">
+      <ul class="space-y-4 text-lg text-text">
+        <li><strong>📍 Home Base:</strong> Paia, Maui — but I travel anywhere love takes me</li>
+        <li><strong>📸 Photography Style:</strong> Candid, dreamy, sun-kissed, deeply personal</li>
+        <li><strong>🫶 Values:</strong> Authentic connection, trust, creativity, slow moments</li>
+        <li><strong>🎉 Most booked:</strong> Intimate beach weddings, couple sessions, and families on vacation</li>
+      </ul>
+
+      <a href="/booking" class="inline-block mt-6 button">
+        Let's get together!
+      </a>
+    </div>
+
+  </div>
+</section>

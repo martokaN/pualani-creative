@@ -1,0 +1,20 @@
+/* tailwindcss */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.link {
+    @apply px-2 text-lg text-text hover:text-hover transition-colors;
+}
+
+.sub-link {
+    @apply px-2 text-base text-text hover:text-hover transition-colors;
+}
+
+.button {
+    @apply p-2 rounded-full bg-button text-buttontext text-lg hover:no-underline hover:text-buttontext hover:bg-hover transition-colors;
+}
+
+.svg {
+    @apply text-text hover:text-hover;
+}

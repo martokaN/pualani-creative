@@ -1,0 +1,162 @@
+---
+// Manual slideshow component with manually defined images and position control
+import { Image } from 'astro:assets';
+
+// Import your images directly
+import image1 from '../assets/slideshow/image1.jpg';
+import image2 from '../assets/slideshow/image2.jpg';
+import image3 from '../assets/slideshow/image3.jpg';
+import image4 from '../assets/slideshow/image4.jpg';
+import image5 from '../assets/slideshow/image5.jpg';
+
+// Manually define the images array with positions
+const images = [
+  {
+    src: image1,
+    alt: 'Image 1',
+    position: 'object-[50%_50%]'
+  },
+  {
+    src: image2,
+    alt: 'Image 2',
+    position: 'object-[55%_50%]'
+  },
+  {
+    src: image3,
+    alt: 'Image 3',
+    position: 'object-[35%_20%]'
+  },
+  {
+    src: image4,
+    alt: 'Image 4',
+    position: 'object-[50%_48%]'
+  },
+  {
+    src: image5,
+    alt: 'Image 5',
+    position: 'object-[50%_80%]'
+  }
+  // Add more images as needed
+];
+---
+<div class="relative h-[calc(100vh-96px)]">
+  <!-- Slideshow container -->
+  <div id="slideshow" class="w-full h-full">
+    {images.map((image, index) => (
+      <div class="slide absolute w-full h-full opacity-0 transition-opacity duration-1000 ease-in-out overflow-hidden" data-index={index}>
+        <Image 
+          src={image.src} 
+          alt={image.alt} 
+          width={1920} 
+          height={1080} 
+          class={`absolute inset-0 h-full w-full object-cover ${image.position}`}
+          quality={100}
+        />
+      </div>
+    ))}
+  </div>
+
+  <!-- Navigation arrows -->
+  <button id="prev-button" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-black/50 hover:text-black/30 rounded-full p-3 z-20 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+    <span class="sr-only">Previous slide</span>
+  </button>
+  
+  <button id="next-button" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-black/50 hover:text-black/30 rounded-full p-3 z-20 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="size-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+    <span class="sr-only">Next slide</span>
+  </button>
+
+  <!-- Indicator dots -->
+  <div class="absolute top-8 left-0 right-0 flex justify-center gap-4 z-10">
+    {images.map((_, index) => (
+      <div class="indicator w-10 h-4 rounded-full bg-black/10 transition-all duration-700 ease-in-out scale-75" data-index={index}></div>
+    ))}
+  </div>
+</div>
+
+<script>
+// Client-side JavaScript for slideshow functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const slides = document.querySelectorAll('.slide');
+  const indicators = document.querySelectorAll('.indicator');
+  const prevButton = document.getElementById('prev-button');
+  const nextButton = document.getElementById('next-button');
+  
+  let currentSlide = 0;
+  let slideInterval: number;
+
+  // Function to show a specific slide
+  function showSlide(index: number) {
+    // Hide all slides
+    slides.forEach((slide) => {
+      (slide as HTMLElement).style.opacity = '0';
+      (slide as HTMLElement).style.zIndex = '0';
+    });
+    
+    // Show the selected slide
+    (slides[index] as HTMLElement).style.opacity = '1';
+    (slides[index] as HTMLElement).style.zIndex = '1';
+    
+    // Update indicators
+    indicators.forEach((indicator, i) => {
+      if (i === index) {
+        indicator.classList.add('bg-black/30', 'scale-100');
+        indicator.classList.remove('bg-black/10', 'scale-75');
+      } else {
+        indicator.classList.add('bg-black/10', 'scale-75');
+        indicator.classList.remove('bg-black/30', 'scale-100');
+      }
+    });
+    
+    // Update current slide index
+    currentSlide = index;
+  }
+
+  // Auto-advance slides
+  function startSlideshow() {
+    slideInterval = setInterval(() => {
+      const nextSlide = (currentSlide + 1) % slides.length;
+      showSlide(nextSlide);
+    }, 5000); // Change slide every 5 seconds
+  }
+
+  // Initialize the slideshow
+  if (slides.length > 0) {
+    showSlide(0);
+    startSlideshow();
+  }
+
+  // Add click event to navigation buttons
+  if (prevButton) {
+    prevButton.addEventListener('click', () => {
+      clearInterval(slideInterval); // Stop auto-slideshow when manually changed
+      const prevSlide = (currentSlide - 1 + slides.length) % slides.length;
+      showSlide(prevSlide);
+      startSlideshow(); // Restart auto-slideshow
+    });
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener('click', () => {
+      clearInterval(slideInterval); // Stop auto-slideshow when manually changed
+      const nextSlide = (currentSlide + 1) % slides.length;
+      showSlide(nextSlide);
+      startSlideshow(); // Restart auto-slideshow
+    });
+  }
+
+  // Add click events to indicators
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => {
+      clearInterval(slideInterval);
+      showSlide(index);
+      startSlideshow();
+    });
+  });
+});
+</script>
