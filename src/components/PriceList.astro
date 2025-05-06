@@ -1,0 +1,283 @@
+---
+// PricingComponent.astro
+import { Image } from "astro:assets";
+
+// Define your photography packages
+const photographyPackages = [
+  {
+    id: "30min",
+    name: "30 Minute Session",
+    price: "$149",
+    tagline: "Quick and meaningful moments",
+    shortDescription: "Perfect for individuals or quick couple shots",
+    image: "/images/30min-preview.jpg", // Replace with actual path
+    features: [
+      "30-minute outdoor or studio session",
+      "1 outfit",
+      "Online gallery with 20+ edited photos",
+      "2 digital downloads included",
+      "Additional images available for purchase",
+      "Print release for personal use"
+    ],
+    details: "Great for quick portraits, holiday cards, or simple social content. Short and sweet, this session is efficient while still capturing beautiful results."
+  },
+  {
+    id: "45min",
+    name: "45 Minute Session",
+    price: "$199",
+    tagline: "More time, more memories",
+    shortDescription: "Ideal for couples or small families",
+    image: "/images/45min-preview.jpg",
+    features: [
+      "45-minute outdoor or studio session",
+      "Up to 2 outfits",
+      "Online gallery with 30+ edited photos",
+      "5 digital downloads included",
+      "Additional images available for purchase",
+      "Print release for personal use"
+    ],
+    details: "This session offers a bit more flexibility for outfit changes and creative variety. A solid option for small families, couples, or professionals needing extra looks."
+  },
+  {
+    id: "60min",
+    name: "1 Hour Session",
+    price: "$249",
+    tagline: "Versatile and relaxed",
+    shortDescription: "Great for families, maternity, or branding",
+    image: "/images/60min-preview.jpg",
+    features: [
+      "1-hour outdoor or studio session",
+      "Up to 3 outfits",
+      "Online gallery with 40+ edited photos",
+      "10 digital downloads included",
+      "Additional images available for purchase",
+      "Print release for personal use"
+    ],
+    details: "This popular session length allows for more creative freedom and relaxed pacing. Great for families, maternity shoots, or personal branding."
+  },
+  {
+    id: "90min",
+    name: "90 Minute Session",
+    price: "$349",
+    tagline: "More time for creativity",
+    shortDescription: "Perfect for storytelling sessions",
+    image: "/images/90min-preview.jpg",
+    features: [
+      "90-minute outdoor or studio session",
+      "Multiple outfit changes",
+      "Online gallery with 60+ edited photos",
+      "15 digital downloads included",
+      "Additional images available for purchase",
+      "Print release for personal use"
+    ],
+    details: "Ideal for lifestyle storytelling or capturing multiple locations and looks. Great for families with young kids or content creators needing variety."
+  },
+  {
+    id: "120min",
+    name: "2 Hour Session",
+    price: "$449",
+    tagline: "The ultimate portrait experience",
+    shortDescription: "Extended session for high-impact results",
+    image: "/images/120min-preview.jpg",
+    features: [
+      "2-hour session at 1–2 locations",
+      "Unlimited outfit changes",
+      "Online gallery with 80+ edited photos",
+      "20 digital downloads included",
+      "Additional images available for purchase",
+      "Print release for personal use"
+    ],
+    details: "For those who want it all—variety, depth, and time to get creative. Great for large families, personal branding, or special life moments."
+  },
+  {
+    id: "proposal",
+    name: "Proposal Session",
+    price: "$499",
+    tagline: "The start of your forever",
+    shortDescription: "Discreet coverage of your big question",
+    image: "/images/proposal-preview.jpg",
+    features: [
+      "Up to 1 hour of discreet coverage",
+      "Planning and location coordination",
+      "Online gallery with 40+ edited photos",
+      "10 digital downloads included",
+      "Optional mini engagement session after",
+      "Print release for personal use"
+    ],
+    details: "We help you plan and capture the surprise and joy of your proposal without spoiling the moment. Includes emotional candids and a short portrait session afterward."
+  },
+  {
+    id: "elopement",
+    name: "Elopement Package",
+    price: "$1,299",
+    tagline: "Intimate and intentional",
+    shortDescription: "Tailored for small, meaningful ceremonies",
+    image: "/images/elopement-preview.jpg",
+    features: [
+      "Up to 3 hours of coverage",
+      "1 photographer",
+      "Online gallery with 100+ edited photos",
+      "Custom USB with high-resolution images",
+      "Location scouting and timeline support",
+      "Print release for personal use"
+    ],
+    details: "For couples choosing intimacy over tradition. We capture the essence of your elopement with care, focusing on emotion, story, and scenery."
+  },
+  {
+    id: "wedding",
+    name: "Wedding Collection",
+    price: "$2,499",
+    tagline: "Timeless memories of your special day",
+    shortDescription: "Full day coverage with 2 photographers",
+    image: "/images/wedding-preview.jpg",
+    features: [
+      "8 hours of coverage",
+      "2 professional photographers",
+      "Online gallery with 500+ edited photos",
+      "Engagement session included",
+      "Custom USB with high-resolution images",
+      "Print release for personal use"
+    ],
+    details: "Our wedding collection captures every meaningful moment from preparations to the dance floor. With two photographers, we ensure nothing is missed while creating artistic portraits that tell your unique love story."
+  }
+];
+---
+
+<div class="w-full py-6">
+  <div class="container mx-auto">
+    <h2 class="text-4xl font-light text-center mb-2 text-text">Investment</h2>
+    <p class="text-center text-text mb-12 max-w-2xl mx-auto">Select the perfect photography package for your needs or contact me for a custom experience tailored just for you.</p>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      {photographyPackages.map(pkg => (
+        <div class="group relative bg-specialbg rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+          <!-- Hidden expandable content -->
+          <div id={`pricing-details-${pkg.id}`} class="hidden">
+            <div class="p-8 pt-0">
+              <div class="prose max-w-none text-gray-600">
+                <p class="mb-4">{pkg.details}</p>
+                <h4 class="text-lg font-medium text-text mt-6 mb-3">What's Included:</h4>
+                <ul class="space-y-2">
+                  {pkg.features.map(feature => (
+                    <li class="flex items-start">
+                      <svg class="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="mt-8 flex justify-between items-center">
+                <button class="close-details px-2 flex items-center justify-center py-1 rounded-full bg-specialbg text-text text-base hover:scale-105 transition-transform" data-id={pkg.id}>
+                  <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                  Back
+                </button>
+                <a href="#contact" class="p-2 rounded-full bg-button text-buttontext text-lg hover:no-underline hover:text-buttontext hover:bg-hover transition-colors">
+                  Book Now
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Package preview card -->
+          <div id={`pricing-preview-${pkg.id}`}>
+            <div class="h-48 bg-gray-200 overflow-hidden">
+              <img 
+                src={pkg.image} 
+                alt={pkg.name}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="text-xl font-medium text-heading">{pkg.name}</h3>
+                  <p class="text-gray-500 text-sm mt-1">{pkg.tagline}</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-2xl text-gray-800">{pkg.price}</span>
+                </div>
+              </div>
+              <p class="text-text mb-6">{pkg.shortDescription}</p>
+              <div class="flex justify-center">
+                <button 
+                  class="show-details flex items-center justify-center w-2/3 py-1 rounded-full bg-button text-buttontext text-base hover:no-underline hover:text-buttontext hover:bg-hover transition-colors"
+                  data-id={pkg.id}
+                >
+                  View Package Details
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <div class="mt-16 text-center">
+      <p class="text-text mb-6">Need something more customized? I'd love to create a tailored package just for you.</p>
+      <a href="#contact" class="p-2 rounded-full bg-button text-buttontext text-lg hover:no-underline hover:text-buttontext hover:bg-hover transition-colors">
+        Contact Me
+      </a>
+    </div>
+  </div>
+</div>
+
+<script is:client>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Toggle between preview and details
+    const showDetailsBtns = document.querySelectorAll('.show-details');
+    const closeDetailsBtns = document.querySelectorAll('.close-details');
+    
+    showDetailsBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const packageId = btn.dataset.id;
+        const previewEl = document.getElementById(`pricing-preview-${packageId}`);
+        const detailsEl = document.getElementById(`pricing-details-${packageId}`);
+        
+        // Smooth transition
+        previewEl.classList.add('opacity-0');
+        setTimeout(() => {
+          previewEl.classList.add('hidden');
+          previewEl.classList.remove('opacity-0');
+          detailsEl.classList.remove('hidden');
+          
+          // Fade in animation
+          detailsEl.classList.add('opacity-0');
+          setTimeout(() => {
+            detailsEl.classList.remove('opacity-0');
+            detailsEl.classList.add('opacity-100', 'transition-opacity', 'duration-300');
+          }, 10);
+        }, 200);
+      });
+    });
+    
+    closeDetailsBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const packageId = btn.dataset.id;
+        const previewEl = document.getElementById(`pricing-preview-${packageId}`);
+        const detailsEl = document.getElementById(`pricing-details-${packageId}`);
+        
+        // Smooth transition
+        detailsEl.classList.add('opacity-0');
+        setTimeout(() => {
+          detailsEl.classList.add('hidden');
+          detailsEl.classList.remove('opacity-0', 'opacity-100', 'transition-opacity', 'duration-300');
+          previewEl.classList.remove('hidden');
+          
+          // Fade in animation
+          previewEl.classList.add('opacity-0');
+          setTimeout(() => {
+            previewEl.classList.remove('opacity-0');
+            previewEl.classList.add('opacity-100', 'transition-opacity', 'duration-300');
+          }, 10);
+        }, 200);
+      });
+    });
+  });
+</script>

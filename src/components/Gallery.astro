@@ -1,8 +1,7 @@
 ---
 import { Image } from "astro:assets";
 
-const categories = ["babymoon", "couple", "elopements", "family", "proposals"];
-
+const categories = ["all", "babymoon", "couple", "elopements", "family", "proposals"];
 const images = import.meta.glob("../assets/gallery/*/*.jpg", { eager: true, import: "default" });
 
 const galleryImages = Object.entries(images).map(([path, image]) => {
@@ -11,16 +10,46 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
   return { src: image, category };
 });
 ---
-<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+
+<!-- Toggle Button for Mobile -->
+<div class="md:hidden flex justify-center mb-4">
+  <button id="toggleFilters" class="px-4 py-2 border rounded-md text-text border-border flex items-center gap-2">
+    <span>Toggle Filters</span>
+    <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 ease-in-out" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+</div>
+
+<!-- Filter Buttons -->
+<div id="filtersContainer" class="md:block transition-all duration-500 ease-in-out transform origin-top overflow-hidden max-h-0 opacity-0 md:opacity-100 md:max-h-full md:mb-8">
+  <div class="flex flex-wrap justify-center md:justify-start mb-0 pb-0 border-b-0 border-border transition-all duration-500 ease-in-out">
+    {categories.map((item) => (
+      <button 
+        class="filter-btn m-2 md:m-3 py-2 px-4 md:px-6 flex items-center justify-center rounded-md border border-border hover:bg-background transition-colors text-text font-sans capitalize"
+        data-filter={item}
+      >
+        {item}
+      </button>
+    ))}
+  </div>
+</div>
+
+<!-- Gallery -->
+<div id="gallery" class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
   {galleryImages.length === 0 ? (
     <p>No images found!</p>
   ) : (
     galleryImages.map(({ src, category }, index) => (
-      <div class="break-inside-avoid overflow-hidden rounded-2xl shadow">
+      <div 
+        class="gallery-item break-inside-avoid overflow-hidden rounded-2xl shadow cursor-pointer" 
+        data-category={category}
+        data-index={index}
+      >
         <Image
           src={src}
           alt={category}
-          class="w-full h-auto rounded-2xl"
+          class="w-full h-auto rounded-2xl hover:scale-105 duration-300 transition-transform"
           loading="lazy"
           sizes="(min-width: 768px) 25vw, 50vw"
           format="webp"
@@ -29,3 +58,142 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
     ))
   )}
 </div>
+
+<!-- Lightbox -->
+<div 
+  id="lightbox" 
+  class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden"
+>
+  <button id="prevBtn" class="absolute left-4 text-white text-4xl">&#8592;</button>
+  <img id="lightboxImg" class="max-h-[90vh] max-w-[90vw] rounded-md" src="" alt="lightbox" />
+  <button id="nextBtn" class="absolute right-4 text-white text-4xl">&#8594;</button>
+  <button id="closeBtn" class="absolute top-4 right-4 text-white text-2xl">&#10005;</button>
+</div>
+
+<!-- Script -->
+<script is:client>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const toggleFilters = document.getElementById('toggleFilters');
+    const filtersContainer = document.getElementById('filtersContainer');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const filterContentWrapper = filtersContainer.querySelector('div');
+
+    let currentIndex = 0;
+    let visibleImages = [];
+    let isAnimating = false;
+
+    function applyFilter(filter) {
+      visibleImages = [];
+
+      galleryItems.forEach(item => {
+        const category = item.dataset.category;
+        const show = filter === 'all' || category === filter;
+        item.style.display = show ? 'block' : 'none';
+        if (show) {
+          const img = item.querySelector('img');
+          if (img) visibleImages.push(img.getAttribute('src'));
+        }
+      });
+
+      filterButtons.forEach(b => {
+        b.classList.remove('bg-background', 'ring-1', 'ring-border');
+      });
+      
+      const activeBtn = document.querySelector(`[data-filter="${filter}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-background', 'ring-1', 'ring-border');
+      }
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        applyFilter(filter);
+      });
+    });
+
+    toggleFilters?.addEventListener('click', () => {
+      if (isAnimating) return;
+      
+      isAnimating = true;
+      const isOpen = filtersContainer.classList.contains('open');
+      
+      if (isOpen) {
+        // Close the filters
+        filtersContainer.classList.remove('max-h-96', 'opacity-100', 'open');
+        filtersContainer.classList.add('max-h-0', 'opacity-0');
+        filterContentWrapper.classList.remove('mb-6', 'pb-4', 'border-b');
+        toggleIcon.style.transform = 'rotate(0deg)';
+      } else {
+        // Open the filters
+        filtersContainer.classList.remove('max-h-0', 'opacity-0');
+        filtersContainer.classList.add('max-h-96', 'opacity-100', 'open');
+        filterContentWrapper.classList.add('mb-6', 'pb-4', 'border-b');
+        toggleIcon.style.transform = 'rotate(180deg)';
+      }
+      
+      // Reset animation lock after transition completes
+      setTimeout(() => {
+        isAnimating = false;
+      }, 500);
+    });
+
+    // Handle transition end to ensure animation is fully complete
+    filtersContainer.addEventListener('transitionend', () => {
+      isAnimating = false;
+    });
+
+    const defaultBtn = document.querySelector('[data-filter="all"]');
+    if (defaultBtn) defaultBtn.click();
+
+    function showLightbox(index) {
+      currentIndex = index;
+      lightboxImg.src = visibleImages[index];
+      lightbox.classList.remove('hidden');
+    }
+
+    function closeLightbox() {
+      lightbox.classList.add('hidden');
+    }
+
+    function showNext() {
+      currentIndex = (currentIndex + 1) % visibleImages.length;
+      lightboxImg.src = visibleImages[currentIndex];
+    }
+
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
+      lightboxImg.src = visibleImages[currentIndex];
+    }
+
+    galleryItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const img = item.querySelector('img')?.getAttribute('src');
+        const indexInVisible = visibleImages.indexOf(img);
+        if (indexInVisible !== -1) showLightbox(indexInVisible);
+      });
+    });
+
+    nextBtn.addEventListener('click', showNext);
+    prevBtn.addEventListener('click', showPrev);
+    closeBtn.addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  });
+</script>
