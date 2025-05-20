@@ -1,146 +1,7 @@
 ---
-// PricingComponent.astro
 import { Image } from "astro:assets";
 
-// Define your photography packages
-const photographyPackages = [
-  {
-    id: "30min",
-    name: "30 Minute Session",
-    price: "$149",
-    tagline: "Quick and meaningful moments",
-    shortDescription: "Perfect for individuals or quick couple shots",
-    image: "/images/30min-preview.jpg", // Replace with actual path
-    features: [
-      "30-minute outdoor or studio session",
-      "1 outfit",
-      "Online gallery with 20+ edited photos",
-      "2 digital downloads included",
-      "Additional images available for purchase",
-      "Print release for personal use"
-    ],
-    details: "Great for quick portraits, holiday cards, or simple social content. Short and sweet, this session is efficient while still capturing beautiful results."
-  },
-  {
-    id: "45min",
-    name: "45 Minute Session",
-    price: "$199",
-    tagline: "More time, more memories",
-    shortDescription: "Ideal for couples or small families",
-    image: "/images/45min-preview.jpg",
-    features: [
-      "45-minute outdoor or studio session",
-      "Up to 2 outfits",
-      "Online gallery with 30+ edited photos",
-      "5 digital downloads included",
-      "Additional images available for purchase",
-      "Print release for personal use"
-    ],
-    details: "This session offers a bit more flexibility for outfit changes and creative variety. A solid option for small families, couples, or professionals needing extra looks."
-  },
-  {
-    id: "60min",
-    name: "1 Hour Session",
-    price: "$249",
-    tagline: "Versatile and relaxed",
-    shortDescription: "Great for families, maternity, or branding",
-    image: "/images/60min-preview.jpg",
-    features: [
-      "1-hour outdoor or studio session",
-      "Up to 3 outfits",
-      "Online gallery with 40+ edited photos",
-      "10 digital downloads included",
-      "Additional images available for purchase",
-      "Print release for personal use"
-    ],
-    details: "This popular session length allows for more creative freedom and relaxed pacing. Great for families, maternity shoots, or personal branding."
-  },
-  {
-    id: "90min",
-    name: "90 Minute Session",
-    price: "$349",
-    tagline: "More time for creativity",
-    shortDescription: "Perfect for storytelling sessions",
-    image: "/images/90min-preview.jpg",
-    features: [
-      "90-minute outdoor or studio session",
-      "Multiple outfit changes",
-      "Online gallery with 60+ edited photos",
-      "15 digital downloads included",
-      "Additional images available for purchase",
-      "Print release for personal use"
-    ],
-    details: "Ideal for lifestyle storytelling or capturing multiple locations and looks. Great for families with young kids or content creators needing variety."
-  },
-  {
-    id: "120min",
-    name: "2 Hour Session",
-    price: "$449",
-    tagline: "The ultimate portrait experience",
-    shortDescription: "Extended session for high-impact results",
-    image: "/images/120min-preview.jpg",
-    features: [
-      "2-hour session at 1–2 locations",
-      "Unlimited outfit changes",
-      "Online gallery with 80+ edited photos",
-      "20 digital downloads included",
-      "Additional images available for purchase",
-      "Print release for personal use"
-    ],
-    details: "For those who want it all—variety, depth, and time to get creative. Great for large families, personal branding, or special life moments."
-  },
-  {
-    id: "proposal",
-    name: "Proposal Session",
-    price: "$499",
-    tagline: "The start of your forever",
-    shortDescription: "Discreet coverage of your big question",
-    image: "/images/proposal-preview.jpg",
-    features: [
-      "Up to 1 hour of discreet coverage",
-      "Planning and location coordination",
-      "Online gallery with 40+ edited photos",
-      "10 digital downloads included",
-      "Optional mini engagement session after",
-      "Print release for personal use"
-    ],
-    details: "We help you plan and capture the surprise and joy of your proposal without spoiling the moment. Includes emotional candids and a short portrait session afterward."
-  },
-  {
-    id: "elopement",
-    name: "Elopement Package",
-    price: "$1,299",
-    tagline: "Intimate and intentional",
-    shortDescription: "Tailored for small, meaningful ceremonies",
-    image: "/images/elopement-preview.jpg",
-    features: [
-      "Up to 3 hours of coverage",
-      "1 photographer",
-      "Online gallery with 100+ edited photos",
-      "Custom USB with high-resolution images",
-      "Location scouting and timeline support",
-      "Print release for personal use"
-    ],
-    details: "For couples choosing intimacy over tradition. We capture the essence of your elopement with care, focusing on emotion, story, and scenery."
-  },
-  {
-    id: "wedding",
-    name: "Wedding Collection",
-    price: "$2,499",
-    tagline: "Timeless memories of your special day",
-    shortDescription: "Full day coverage with 2 photographers",
-    image: "/images/wedding-preview.jpg",
-    features: [
-      "8 hours of coverage",
-      "2 professional photographers",
-      "Online gallery with 500+ edited photos",
-      "Engagement session included",
-      "Custom USB with high-resolution images",
-      "Print release for personal use"
-    ],
-    details: "Our wedding collection captures every meaningful moment from preparations to the dance floor. With two photographers, we ensure nothing is missed while creating artistic portraits that tell your unique love story."
-  }
-];
+import { photographyPackages } from "../data/photographyPackages.js";
 ---
 
 <div class="w-full py-6">
@@ -184,11 +45,15 @@ const photographyPackages = [
           
           <!-- Package preview card -->
           <div id={`pricing-preview-${pkg.id}`}>
-            <div class="h-48 bg-gray-200 overflow-hidden">
-              <img 
-                src={pkg.image} 
+            <div class="h-72 bg-gray-200 overflow-hidden">
+              <Image
+                src={pkg.image}
                 alt={pkg.name}
-                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                widths={[960, 1280, 1920]}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                quality="80"
+                class={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${pkg.imgPosition}`}
               />
             </div>
             <div class="p-6">
@@ -228,17 +93,24 @@ const photographyPackages = [
   </div>
 </div>
 
-<script is:client>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     // Toggle between preview and details
     const showDetailsBtns = document.querySelectorAll('.show-details');
     const closeDetailsBtns = document.querySelectorAll('.close-details');
     
-    showDetailsBtns.forEach(btn => {
+    showDetailsBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const packageId = btn.dataset.id;
+        // Type assertion to HTMLElement
+        const button = btn as HTMLElement;
+        const packageId = button.getAttribute('data-id');
+        
+        if (!packageId) return;
+        
         const previewEl = document.getElementById(`pricing-preview-${packageId}`);
         const detailsEl = document.getElementById(`pricing-details-${packageId}`);
+        
+        if (!previewEl || !detailsEl) return;
         
         // Smooth transition
         previewEl.classList.add('opacity-0');
@@ -257,11 +129,18 @@ const photographyPackages = [
       });
     });
     
-    closeDetailsBtns.forEach(btn => {
+    closeDetailsBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const packageId = btn.dataset.id;
+        // Type assertion to HTMLElement
+        const button = btn as HTMLElement;
+        const packageId = button.getAttribute('data-id');
+        
+        if (!packageId) return;
+        
         const previewEl = document.getElementById(`pricing-preview-${packageId}`);
         const detailsEl = document.getElementById(`pricing-details-${packageId}`);
+        
+        if (!previewEl || !detailsEl) return;
         
         // Smooth transition
         detailsEl.classList.add('opacity-0');

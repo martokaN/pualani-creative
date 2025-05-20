@@ -1,279 +1,122 @@
 ---
-// FloralPricingComponent.astro
 import { Image } from "astro:assets";
 
-// Define floral arrangement packages 
-const floralPackages = [
-  {
-    id: "simple",
-    name: "Simple Elegance",
-    price: "$75",
-    tagline: "Understated beauty for everyday moments",
-    shortDescription: "A charming arrangement of seasonal blooms",
-    image: "/images/simple-elegance.jpg", // Replace with actual path
-    features: [
-      "Hand-selected seasonal flowers",
-      "Elegant glass vase included",
-      "Approximately 8-10 inches in height",
-      "Perfect for dining tables or side tables",
-      "Fresh for 5-7 days with proper care",
-      "Delivery available in local area"
-    ],
-    details: "Our Simple Elegance arrangement brings a touch of nature's beauty to your home with carefully selected seasonal blooms. This versatile arrangement works beautifully in any room and makes a thoughtful gift for birthdays, thank you occasions, or simply to brighten someone's day."
-  },
-  {
-    id: "luxe",
-    name: "Luxe Bouquet",
-    price: "$125",
-    tagline: "Statement-making florals for special moments",
-    shortDescription: "Premium blooms with designer presentation",
-    image: "/images/luxe-bouquet.jpg",
-    features: [
-      "Premium seasonal flowers and foliage",
-      "Lush, full arrangement with focal flowers",
-      "Approximately 12-14 inches in height",
-      "Designer vase included",
-      "Fresh for 7-10 days with proper care",
-      "Complimentary handwritten note"
-    ],
-    details: "The Luxe Bouquet creates an immediate impression with its generous proportions and premium blooms. Perfect for significant celebrations, this arrangement features showstopping florals with textural elements that create depth and visual interest. Each Luxe Bouquet is a unique artistic expression designed to delight."
-  },
-  {
-    id: "garden",
-    name: "Garden Gathering",
-    price: "$95",
-    tagline: "Wildly romantic with natural charm",
-    shortDescription: "Lush, garden-inspired arrangement",
-    image: "/images/garden-gathering.jpg",
-    features: [
-      "Garden-style seasonal blooms and greenery",
-      "Loose, natural arrangement style",
-      "Approximately 10-12 inches in height",
-      "Eco-friendly vessel included",
-      "Fresh for 5-7 days with proper care",
-      "Perfect for nature lovers"
-    ],
-    details: "Our Garden Gathering brings the feeling of a freshly-picked bouquet indoors. With a natural, slightly wild aesthetic, this arrangement captures the charm of a cottage garden with seasonal blooms and varied textures. Each Garden Gathering reflects the season's bounty and natural beauty."
-  },
-  {
-    id: "petite",
-    name: "Petite Posies",
-    price: "$45",
-    tagline: "Small in size, big on charm",
-    shortDescription: "Delightful mini arrangements, perfect for gifting",
-    image: "/images/petite-posies.jpg",
-    features: [
-      "Curated selection of seasonal petite blooms",
-      "Small-scale arrangement, big visual impact",
-      "Approximately 6-7 inches in height",
-      "Charming bud vase included",
-      "Fresh for 5-7 days with proper care",
-      "Perfect for brightening small spaces"
-    ],
-    details: "Don't let the size fool you - our Petite Posies pack plenty of personality into a smaller package. These delightful arrangements are perfect for bedside tables, bathroom counters, office desks, or anywhere you want a touch of floral joy without taking up too much space."
-  },
-  {
-    id: "subscription",
-    name: "Bloom Subscription",
-    price: "From $65/delivery",
-    tagline: "Regular floral joy delivered to your door",
-    shortDescription: "Weekly, bi-weekly or monthly flower deliveries",
-    image: "/images/subscription-preview.jpg",
-    features: [
-      "Designer's choice fresh arrangements",
-      "Select your delivery frequency",
-      "Each arrangement uniquely designed",
-      "Vase included with first delivery",
-      "Convenient automatic deliveries",
-      "Pause or cancel anytime"
-    ],
-    details: "Our most popular option! Enjoy the luxury of fresh flowers regularly with our Bloom Subscription. Each delivery brings a new, seasonally-inspired arrangement to your door without having to remember to order. Choose weekly, bi-weekly, or monthly deliveries and add a touch of nature's beauty to your routine."
-  },
-  {
-    id: "wedding",
-    name: "Wedding Collection",
-    price: "Starting at $750",
-    tagline: "Memorable florals for your special day",
-    shortDescription: "Custom designs for your wedding vision",
-    image: "/images/wedding-flowers.jpg",
-    features: [
-      "Personal consultation with our designer",
-      "Custom proposal based on your style and budget",
-      "Bridal bouquet, boutonnières, and centerpieces",
-      "Setup and delivery available",
-      "Seasonal blooms at their peak",
-      "Archive-quality photography of your flowers"
-    ],
-    details: "Your wedding flowers should be as unique as your love story. Our Wedding Collection begins with a personal consultation to understand your vision, color palette, and style preferences. We then create custom designs that complement your venue and create magical moments throughout your celebration. Contact us for a detailed quote tailored to your needs."
-  }
-];
+import { floralPackages } from "../data/floralPackages";
 ---
 
-<div class="w-full py-16 bg-gradient-to-b from-rose-50 to-white">
-  <div class="container mx-auto px-4 max-w-4xl">
-    <h2 class="text-4xl font-light text-center mb-3 text-rose-900">Floral Collections</h2>
-    <p class="text-center text-rose-700/80 mb-12 max-w-2xl mx-auto">Beautiful hand-crafted arrangements for every occasion, created with seasonal blooms and artistic vision.</p>
-    
-    <div class="flex flex-col space-y-8">
-      {floralPackages.map((pkg, index) => (
-        <div class="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-rose-100">
-          <div class="flex flex-col md:flex-row">
-            <!-- Image section -->
-            <div class="md:w-2/5 h-52 md:h-full overflow-hidden relative">
-              <div class="absolute inset-0 bg-rose-900/10 group-hover:bg-rose-900/0 transition-colors duration-300 z-10"></div>
-              <img 
-                src={pkg.image} 
+<div class="w-full py-10">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-light text-center mb-4 text-text">Floral Design Services</h2>
+    <p class="text-center text-text mb-12 max-w-2xl mx-auto">Select from our floral offerings or inquire about a fully custom arrangement designed just for your occasion.</p>
+
+    <div class="space-y-12">
+      {floralPackages.map(pkg => (
+        <div class="group relative bg-specialbg rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 max-w-3xl mx-auto">
+          <div id={`preview-${pkg.id}`}>
+            <div class="h-72 bg-gray-100 overflow-hidden">
+              <Image
+                src={pkg.image}
                 alt={pkg.name}
                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                widths={[960, 1280, 1920]}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                format="webp"
               />
             </div>
-            
-            <!-- Content preview -->
-            <div id={`pricing-preview-${pkg.id}`} class="md:w-3/5 p-6 md:p-8 flex flex-col justify-between">
-              <div>
-                <div class="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 class="text-2xl font-medium text-rose-900">{pkg.name}</h3>
-                    <p class="text-rose-700/70 text-sm mt-1 italic">{pkg.tagline}</p>
-                  </div>
-                  <span class="text-2xl font-bold text-rose-800">{pkg.price}</span>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <h3 class="text-2xl font-semibold text-heading">{pkg.name}</h3>
+                  <p class="text-gray-500 text-sm mt-1">{pkg.tagline}</p>
                 </div>
-                <p class="text-slate-600 mb-6">{pkg.shortDescription}</p>
+                <span class="text-xl text-gray-800">{pkg.price}</span>
               </div>
-              
-              <div class="flex justify-center mt-4">
-                <button 
-                  class="show-details flex items-center justify-center px-6 py-2 rounded-full bg-rose-600 text-white text-base hover:bg-rose-700 transition-colors group-hover:shadow-md"
-                  data-id={pkg.id}
-                >
-                  <span>See Details</span>
-                  <svg class="h-5 w-5 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            
-            <!-- Hidden details section -->
-            <div id={`pricing-details-${pkg.id}`} class="hidden md:w-3/5 p-6 md:p-8">
-              <div>
-                <div class="flex justify-between items-start mb-6">
-                  <div>
-                    <h3 class="text-2xl font-medium text-rose-900">{pkg.name}</h3>
-                    <p class="text-rose-700/70 text-sm mt-1 italic">{pkg.tagline}</p>
-                  </div>
-                  <span class="text-2xl font-bold text-rose-800">{pkg.price}</span>
-                </div>
-                
-                <p class="text-slate-600 mb-6">{pkg.details}</p>
-                
-                <div class="mb-6">
-                  <h4 class="text-lg font-medium text-rose-900 mb-3 flex items-center">
-                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                    What's Included
-                  </h4>
-                  <ul class="space-y-2 ml-2">
-                    {pkg.features.map(feature => (
-                      <li class="flex items-start text-slate-600">
-                        <svg class="h-5 w-5 text-rose-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
-                        </svg>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div class="flex justify-between items-center mt-6">
-                  <button class="close-details flex items-center justify-center px-4 py-2 rounded-full bg-white border border-rose-200 text-rose-700 text-sm hover:bg-rose-50 transition-colors" data-id={pkg.id}>
-                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                    </svg>
-                    <span>Back</span>
-                  </button>
-                  
-                  <a href="#order" class="flex items-center justify-center px-6 py-2 rounded-full bg-rose-600 text-white text-base hover:bg-rose-700 transition-colors shadow-sm hover:shadow-md">
-                    <span>Order Now</span>
-                    <svg class="h-5 w-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                  </a>
-                </div>
-              </div>
+              <p class="text-text mb-4">{pkg.shortDescription}</p>
+              <button 
+                class="show-details flex items-center justify-center py-1 px-4 rounded-full bg-button text-buttontext text-base hover:bg-hover transition"
+                data-id={pkg.id}
+              >
+                View Details
+              </button>
             </div>
           </div>
-          
-          <!-- Progress indicator -->
-          <div class="h-1 w-full bg-rose-100 absolute bottom-0 left-0">
-            <div class="h-full bg-gradient-to-r from-rose-300 to-rose-500" style={`width: ${(index + 1) / floralPackages.length * 100}%`}></div>
+
+          <div id={`details-${pkg.id}`} class="hidden">
+            <div class="p-6">
+              <p class="text-gray-600 mb-4">{pkg.details}</p>
+              <h4 class="text-lg font-medium text-text mt-4 mb-2">Included:</h4>
+              <ul class="space-y-2 mb-6">
+                {pkg.features.map(feature => (
+                  <li class="flex items-start">
+                    <svg class="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <div class="flex justify-between items-center">
+                <button 
+                  class="close-details flex items-center px-3 py-1 rounded-full bg-specialbg text-text hover:scale-105 transition"
+                  data-id={pkg.id}
+                >
+                  <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back
+                </button>
+                <a href="/booking" class="px-4 py-1 rounded-full bg-button text-buttontext hover:bg-hover transition">
+                  Book Now
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       ))}
     </div>
-    
+
     <div class="mt-16 text-center">
-      <div class="p-8 bg-rose-50 rounded-xl border border-rose-100">
-        <h3 class="text-2xl font-medium text-rose-900 mb-4">Custom Arrangements</h3>
-        <p class="text-slate-600 mb-6">Looking for something unique? We'd love to create a custom floral arrangement tailored to your specific occasion, color palette, or style preferences.</p>
-        <a href="#contact" class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-rose-600 text-white text-lg hover:bg-rose-700 transition-colors shadow-sm hover:shadow-md">
-          Request Custom Quote
-        </a>
-      </div>
+      <p class="text-text mb-6">Looking for something one-of-a-kind? Let’s dream up a floral design together.</p>
+      <a href="#contact" class="px-4 py-2 rounded-full bg-button text-buttontext text-lg hover:bg-hover transition">
+        Contact Me
+      </a>
     </div>
   </div>
 </div>
 
-<script is:client>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Toggle between preview and details
-    const showDetailsBtns = document.querySelectorAll('.show-details');
-    const closeDetailsBtns = document.querySelectorAll('.close-details');
-    
-    showDetailsBtns.forEach(btn => {
+    const showButtons = document.querySelectorAll('.show-details') as NodeListOf<HTMLElement>;
+    const closeButtons = document.querySelectorAll('.close-details') as NodeListOf<HTMLElement>;
+
+    showButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const packageId = btn.dataset.id;
-        const previewEl = document.getElementById(`pricing-preview-${packageId}`);
-        const detailsEl = document.getElementById(`pricing-details-${packageId}`);
-        
-        // Smooth transition
-        previewEl.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-        setTimeout(() => {
-          previewEl.classList.add('hidden');
-          previewEl.classList.remove('opacity-0', 'transition-opacity', 'duration-300');
-          detailsEl.classList.remove('hidden');
-          
-          // Fade in animation
-          detailsEl.classList.add('opacity-0');
-          setTimeout(() => {
-            detailsEl.classList.remove('opacity-0');
-            detailsEl.classList.add('opacity-100', 'transition-opacity', 'duration-300');
-          }, 10);
-        }, 300);
+        const id = btn.dataset.id;
+        if (!id) return;
+
+        const preview = document.getElementById(`preview-${id}`);
+        const details = document.getElementById(`details-${id}`);
+
+        if (preview && details) {
+          preview.classList.add('hidden');
+          details.classList.remove('hidden');
+        }
       });
     });
-    
-    closeDetailsBtns.forEach(btn => {
+
+    closeButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const packageId = btn.dataset.id;
-        const previewEl = document.getElementById(`pricing-preview-${packageId}`);
-        const detailsEl = document.getElementById(`pricing-details-${packageId}`);
-        
-        // Smooth transition
-        detailsEl.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-        setTimeout(() => {
-          detailsEl.classList.add('hidden');
-          detailsEl.classList.remove('opacity-0', 'opacity-100', 'transition-opacity', 'duration-300');
-          previewEl.classList.remove('hidden');
-          
-          // Fade in animation
-          previewEl.classList.add('opacity-0');
-          setTimeout(() => {
-            previewEl.classList.remove('opacity-0');
-            previewEl.classList.add('opacity-100', 'transition-opacity', 'duration-300');
-          }, 10);
-        }, 300);
+        const id = btn.dataset.id;
+        if (!id) return;
+
+        const preview = document.getElementById(`preview-${id}`);
+        const details = document.getElementById(`details-${id}`);
+
+        if (preview && details) {
+          details.classList.add('hidden');
+          preview.classList.remove('hidden');
+        }
       });
     });
   });

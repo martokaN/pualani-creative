@@ -1,13 +1,15 @@
 ---
 import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 const categories = ["all", "babymoon", "couple", "elopements", "family", "proposals"];
-const images = import.meta.glob("../assets/gallery/*/*.jpg", { eager: true, import: "default" });
+// Use default import to properly get the image metadata
+const images = import.meta.glob<{ default: ImageMetadata }>("../assets/gallery/*/*.jpg", { eager: true });
 
 const galleryImages = Object.entries(images).map(([path, image]) => {
   const parts = path.split("/");
   const category = parts[parts.length - 2];
-  return { src: image, category };
+  return { src: image.default, category };
 });
 ---
 
@@ -51,7 +53,8 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
           alt={category}
           class="w-full h-auto rounded-2xl hover:scale-105 duration-300 transition-transform"
           loading="lazy"
-          sizes="(min-width: 768px) 25vw, 50vw"
+          widths={[960, 1280, 1920]}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           format="webp"
         />
       </div>
@@ -59,53 +62,58 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
   )}
 </div>
 
-<!-- Lightbox -->
+<!-- Lightbox - Removed conflicting classes -->
 <div 
   id="lightbox" 
-  class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden"
+  class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden"
 >
-  <button id="prevBtn" class="absolute left-4 text-white text-4xl">&#8592;</button>
-  <img id="lightboxImg" class="max-h-[90vh] max-w-[90vw] rounded-md" src="" alt="lightbox" />
-  <button id="nextBtn" class="absolute right-4 text-white text-4xl">&#8594;</button>
-  <button id="closeBtn" class="absolute top-4 right-4 text-white text-2xl">&#10005;</button>
+  <div class="w-full h-full flex items-center justify-center">
+    <button id="prevBtn" class="absolute left-4 text-white text-4xl">&#8592;</button>
+    <img id="lightboxImg" class="max-h-[90vh] max-w-[90vw] rounded-md" src="" alt="lightbox" />
+    <button id="nextBtn" class="absolute right-4 text-white text-4xl">&#8594;</button>
+    <button id="closeBtn" class="absolute top-4 right-4 text-white text-2xl">&#10005;</button>
+  </div>
 </div>
 
 <!-- Script -->
-<script is:client>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const galleryItems = document.querySelectorAll('.gallery-item');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const closeBtn = document.getElementById('closeBtn');
-    const toggleFilters = document.getElementById('toggleFilters');
-    const filtersContainer = document.getElementById('filtersContainer');
-    const toggleIcon = document.getElementById('toggleIcon');
-    const filterContentWrapper = filtersContainer.querySelector('div');
+    const lightbox = document.getElementById('lightbox') as HTMLElement | null;
+    const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null;
+    const prevBtn = document.getElementById('prevBtn') as HTMLElement | null;
+    const nextBtn = document.getElementById('nextBtn') as HTMLElement | null;
+    const closeBtn = document.getElementById('closeBtn') as HTMLElement | null;
+    const toggleFilters = document.getElementById('toggleFilters') as HTMLElement | null;
+    const filtersContainer = document.getElementById('filtersContainer') as HTMLElement | null;
+    const toggleIcon = document.getElementById('toggleIcon') as HTMLElement | null;
+    const filterContentWrapper = filtersContainer?.querySelector('div') as HTMLElement | null;
 
     let currentIndex = 0;
-    let visibleImages = [];
+    let visibleImages: string[] = [];
     let isAnimating = false;
 
-    function applyFilter(filter) {
+    function applyFilter(filter: string) {
       visibleImages = [];
 
       galleryItems.forEach(item => {
-        const category = item.dataset.category;
+        const category = item.getAttribute('data-category');
         const show = filter === 'all' || category === filter;
-        item.style.display = show ? 'block' : 'none';
+        (item as HTMLElement).style.display = show ? 'block' : 'none';
+
         if (show) {
           const img = item.querySelector('img');
-          if (img) visibleImages.push(img.getAttribute('src'));
+          if (img?.getAttribute('src')) {
+            visibleImages.push(img.getAttribute('src')!);
+          }
         }
       });
 
       filterButtons.forEach(b => {
         b.classList.remove('bg-background', 'ring-1', 'ring-border');
       });
-      
+
       const activeBtn = document.querySelector(`[data-filter="${filter}"]`);
       if (activeBtn) {
         activeBtn.classList.add('bg-background', 'ring-1', 'ring-border');
@@ -114,61 +122,63 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
 
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const filter = btn.dataset.filter;
-        applyFilter(filter);
+        const filter = btn.getAttribute('data-filter');
+        if (filter) applyFilter(filter);
       });
     });
 
     toggleFilters?.addEventListener('click', () => {
-      if (isAnimating) return;
-      
+      if (isAnimating || !filtersContainer || !filterContentWrapper || !toggleIcon) return;
+
       isAnimating = true;
       const isOpen = filtersContainer.classList.contains('open');
-      
+
       if (isOpen) {
-        // Close the filters
         filtersContainer.classList.remove('max-h-96', 'opacity-100', 'open');
         filtersContainer.classList.add('max-h-0', 'opacity-0');
         filterContentWrapper.classList.remove('mb-6', 'pb-4', 'border-b');
         toggleIcon.style.transform = 'rotate(0deg)';
       } else {
-        // Open the filters
         filtersContainer.classList.remove('max-h-0', 'opacity-0');
         filtersContainer.classList.add('max-h-96', 'opacity-100', 'open');
         filterContentWrapper.classList.add('mb-6', 'pb-4', 'border-b');
         toggleIcon.style.transform = 'rotate(180deg)';
       }
-      
-      // Reset animation lock after transition completes
+
       setTimeout(() => {
         isAnimating = false;
       }, 500);
     });
 
-    // Handle transition end to ensure animation is fully complete
-    filtersContainer.addEventListener('transitionend', () => {
+    filtersContainer?.addEventListener('transitionend', () => {
       isAnimating = false;
     });
 
-    const defaultBtn = document.querySelector('[data-filter="all"]');
-    if (defaultBtn) defaultBtn.click();
+    const defaultBtn = document.querySelector('[data-filter="all"]') as HTMLElement | null;
+    defaultBtn?.click();
 
-    function showLightbox(index) {
+    function showLightbox(index: number) {
+      if (!lightbox || !lightboxImg) return;
       currentIndex = index;
       lightboxImg.src = visibleImages[index];
       lightbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
+      if (!lightbox) return;
       lightbox.classList.add('hidden');
+      document.body.style.overflow = '';
     }
 
     function showNext() {
+      if (!lightboxImg) return;
       currentIndex = (currentIndex + 1) % visibleImages.length;
       lightboxImg.src = visibleImages[currentIndex];
     }
 
     function showPrev() {
+      if (!lightboxImg) return;
       currentIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
       lightboxImg.src = visibleImages[currentIndex];
     }
@@ -176,23 +186,23 @@ const galleryImages = Object.entries(images).map(([path, image]) => {
     galleryItems.forEach(item => {
       item.addEventListener('click', () => {
         const img = item.querySelector('img')?.getAttribute('src');
-        const indexInVisible = visibleImages.indexOf(img);
+        const indexInVisible = visibleImages.indexOf(img ?? '');
         if (indexInVisible !== -1) showLightbox(indexInVisible);
       });
     });
 
-    nextBtn.addEventListener('click', showNext);
-    prevBtn.addEventListener('click', showPrev);
-    closeBtn.addEventListener('click', closeLightbox);
+    nextBtn?.addEventListener('click', showNext);
+    prevBtn?.addEventListener('click', showPrev);
+    closeBtn?.addEventListener('click', closeLightbox);
 
-    document.addEventListener('keydown', (e) => {
-      if (lightbox.classList.contains('hidden')) return;
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (!lightbox || lightbox.classList.contains('hidden')) return;
       if (e.key === 'ArrowRight') showNext();
       if (e.key === 'ArrowLeft') showPrev();
       if (e.key === 'Escape') closeLightbox();
     });
 
-    lightbox.addEventListener('click', (e) => {
+    lightbox?.addEventListener('click', (e: MouseEvent) => {
       if (e.target === lightbox) closeLightbox();
     });
   });
